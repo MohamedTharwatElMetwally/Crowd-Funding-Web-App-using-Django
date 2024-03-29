@@ -89,4 +89,16 @@ def otherProjectDesc(request, userID, proID):
     except Exception as e:
         return HttpResponse(e)
 
-    
+def home(request):
+    latest_projects = Project.objects.order_by('-created_at')[:5]
+    categories = Category.objects.all()
+    return render(request, 'home.html', {'latest_projects': latest_projects, 'categories': categories})
+
+def search_projects(request):
+    query = request.GET.get('query')
+    if query:
+        projects = Project.objects.filter(title__icontains=query) | Project.objects.filter(tags__name__icontains=query).distinct()
+    else:
+        projects = []
+
+    return render(request, 'search_results.html', {'projects': projects, 'query': query})
