@@ -241,3 +241,18 @@ def search_projects(request):
         projects = []
 
     return render(request, 'search_results.html', {'projects': projects, 'query': query})
+
+
+def home(request):
+    
+    latest_projects = Project.objects.order_by('created_at')[:5]
+
+    
+    top_rated_projects = Rate.objects.order_by('rating')[:5]
+
+    context = {
+        'latest_projects': latest_projects,
+        'top_rated_projects': top_rated_projects,
+    }
+
+    return render(request, 'home.html', context)
