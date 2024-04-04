@@ -13,7 +13,7 @@ from django.utils.encoding import force_bytes, force_str
 from .utils import token_generator
 from django.urls import reverse
 from datetime import datetime, timedelta
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 import os
@@ -137,6 +137,7 @@ def editProfile(request, id):
     if request.method == 'POST':
         form = EditProfileForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
+            # Remove old image if user upload a new one or clear the field
             new_profile_pic = form.cleaned_data.get('profile_picture')
             if old_profile_pic and new_profile_pic != old_profile_pic:
                 old_picture_path = os.path.join(settings.MEDIA_ROOT, str(old_profile_pic))
@@ -147,3 +148,20 @@ def editProfile(request, id):
     else:
         form = EditProfileForm(instance=user)
     return render(request, 'user/editProfile.html', context={"form": form})
+
+
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        if request.user.check_password(password):
+            # User entered correct password
+            user = request.user
+            user.delete()
+            messages.success(request, "Your account has been deleted.")
+            return redirect('landing')
+        else:
+            # Incorrect password
+            messages.error(request, "Incorrect password. Please try again.")
+    return render(request, 'delete_account.html')

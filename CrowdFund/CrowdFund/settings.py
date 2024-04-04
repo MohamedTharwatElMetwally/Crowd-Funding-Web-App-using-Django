@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'User.apps.UserConfig',
     'Project.apps.ProjectConfig',
+    'Admin.apps.AdminConfig'
     # 'django_cleanup.apps.CleanupConfig',
 ]
 
@@ -150,6 +151,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'User.email_authentication.EmailBackend',
 ]
+
 
 
 #Configure the email smtp service

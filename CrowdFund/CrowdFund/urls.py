@@ -21,8 +21,10 @@ from django.conf.urls.static import static
 from User.views import landing
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', include("Admin.urls")),
+    # path('admin/', admin.site.urls),
     path('landing/', landing, name="landing"),
+    path('', landing, name="landing"),
     path('user/', include("User.urls")), 
     path('project/', include("Project.urls"))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

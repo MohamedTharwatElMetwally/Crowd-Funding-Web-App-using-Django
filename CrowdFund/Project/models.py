@@ -34,8 +34,14 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    is_featured = models.BooleanField(default=False)
+
     def __str__(self):
         return self.title
+    
+    @property
+    def total_donation(self):
+        return self.donation_set.aggregate(models.Sum('donation_value'))['donation_value__sum'] or 0
 
 class Picture(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -68,6 +74,9 @@ class Rate(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rateValue = models.IntegerField(choices=rate_choices)
+
+class FeaturedProjects(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 
 
